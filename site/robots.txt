@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /case.html
+
+Sitemap: https://stinecreatives.netlify.app/sitemap.xml
