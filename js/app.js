@@ -27,7 +27,7 @@ const ART = [
 ];
 const svc = (s, i) => `<article class="scard" id="s${i}"><div class="art a${i % 5}"><svg viewBox="0 0 200 110" aria-hidden="true">${ART[i % 5]}</svg></div><div class="sb"><h3>${s.title}</h3><p>${s.text}</p><ul>${s.points.map(x => `<li>${x}</li>`).join("")}</ul><a class="more" href="contact.html">Get started</a></div></article>`;
 const shot = p => `<div class="frame${p.image ? "" : " ph"}"><div class="dots"><i></i><i></i><i></i></div>${p.image ? `<img src="${p.image}" alt="${p.title} preview" loading="lazy">` : `<div class="soon">Screenshot coming soon</div>`}</div>`;
-const card = p => `<a class="card" href="case.html?p=${p.slug}"><span class="chip">${p.tags[0]}</span>${shot(p)}<h3>${p.title}</h3><p class="tags">${p.tags.join(" / ")}</p><p class="mu" style="margin-top:6px">${p.summary}</p></a>`;
+const card = p => `<a class="card" href="case-${p.slug}.html"><span class="chip">${p.tags[0]}</span>${shot(p)}<h3>${p.title}</h3><p class="tags">${p.tags.join(" / ")}</p><p class="mu" style="margin-top:6px">${p.summary}</p></a>`;
 const steps = `<ol class="steps">${PROCESS.map(s => `<li><h3>${s.t}</h3><p class="mu">${s.d}</p></li>`).join("")}</ol>`;
 const secHead = (e, h, t) => `<span class="eye">${e}</span><div class="split"><h2 style="margin:0">${h}</h2><p>${t}</p></div>`;
 const band = `<section class="band sec" id="start"><div class="wrap"><div><span class="eye" style="color:#3FEBD1">Ready to start?</span><h2>Let's build yours.</h2><p>Tell us what you want to achieve, or where you are stuck. We will listen, ask the right questions and help you plan the next step.</p></div><div><span class="eye" style="color:#B9C5DE">Write to us</span><a class="mail" href="mailto:${SITE.email}">${SITE.email}</a><div class="row" style="margin-top:28px"><a class="btn" href="${wa(HI)}" target="_blank" rel="noopener">${I.wa}Start on WhatsApp</a></div></div></div></section>`;
@@ -50,12 +50,12 @@ if (page === "services") {
 }
 if (page === "contact") { M.innerHTML = band + enquiry; const h = $("#start h2"); h.outerHTML = `<h1 style="font-size:clamp(2.1rem,4.6vw,3.4rem);margin-bottom:.4em">${h.innerHTML}</h1>`; }
 if (page === "case") {
-  const i = PROJECTS.findIndex(p => p.slug === new URLSearchParams(location.search).get("p")), p = PROJECTS[i];
+  const i = PROJECTS.findIndex(p => p.slug === (document.body.dataset.p || new URLSearchParams(location.search).get("p"))), p = PROJECTS[i];
   if (!p) { M.innerHTML = head("Case study", "Project not found", "Pick a project from our work page.") + `<div class="wrap sec" style="padding-top:0"><a class="btn d" href="work.html">View our work</a></div>` }
   else {
-    document.title = `${p.title} Case Study | stinecreatives`;
+    document.title = `${p.title} Case Study | stinecreatives`; const md = $("meta[name=description]"); if (md) md.content = `${p.summary} A stinecreatives case study.`;
     const n = PROJECTS[(i + 1) % PROJECTS.length], blk = (h, t) => `<div><h3>${h}</h3><p class="mu">${t}</p></div>`;
-    M.innerHTML = `${head(p.tags.join(" / "), p.title, p.summary)}<div class="wrap" style="margin-bottom:8px">${p.url ? `<a class="btn d" href="${p.url}" target="_blank" rel="noopener">Visit live site</a>` : ""}</div><section class="sec wrap" style="padding-top:24px;padding-bottom:40px">${shot(p)}${p.note ? `<p class="mu" style="margin-top:12px;font-size:.9rem">${p.note}</p>` : ""}</section><section class="wrap" style="padding-bottom:88px"><div class="two">${blk("The problem", p.problem)}${blk("What we built", p.built)}${p.tools.length ? blk("Tools used", p.tools.join(", ")) : ""}${blk("The result", p.result)}</div><div class="row" style="margin-top:40px"><a class="btn d" href="contact.html">Get started</a><a class="btn o" style="color:var(--tx);border-color:var(--bd)" href="case.html?p=${n.slug}">Next: ${n.title}</a></div></section>${band}`;
+    M.innerHTML = `${head(p.tags.join(" / "), p.title, p.summary)}<div class="wrap" style="margin-bottom:8px">${p.url ? `<a class="btn d" href="${p.url}" target="_blank" rel="noopener">Visit live site</a>` : ""}</div><section class="sec wrap" style="padding-top:24px;padding-bottom:40px">${shot(p)}${p.note ? `<p class="mu" style="margin-top:12px;font-size:.9rem">${p.note}</p>` : ""}</section><section class="wrap" style="padding-bottom:88px"><div class="two">${blk("The problem", p.problem)}${blk("What we built", p.built)}${p.tools.length ? blk("Tools used", p.tools.join(", ")) : ""}${blk("The result", p.result)}</div><div class="row" style="margin-top:40px"><a class="btn d" href="contact.html">Get started</a><a class="btn o" style="color:var(--tx);border-color:var(--bd)" href="case-${n.slug}.html">Next: ${n.title}</a></div></section>${band}`;
   }
 }
 const fm = $("#f");
